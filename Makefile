@@ -16,7 +16,7 @@ endif
 
 perf_execs := $(foreach n,$(nprocs),concurrency-noprint-x$(n))
 perf_test: $(perf_execs)
-	for x in $(perf_execs) ; do $(perf) ./$$x ; done
+	for x in $(perf_execs) ; do echo ; echo $$x : ; $(perf) ./$$x ; done
 
 out_files := $(foreach n,$(nprocs),out-$(n))
 integrity_check: $(out_files)
