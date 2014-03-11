@@ -1,6 +1,6 @@
 %include "os_dependent_stuff.asm"
 %ifndef NOPRINT
-  extern _printf  
+  extern printf
   section .data
   unsigned_int:
     db `%u\n\0`
@@ -60,7 +60,7 @@ print_loop:
   mov dl, [rbp]                  ; so I can load a single byte into its low byte
   mov rsi, rdx                   ; Transfer to the first-printf-arg register
   and rsp, ~(0xf)                ; 16-byte-align stack pointer
-  call _printf                   ; Do printf
+  call printf                    ; Do printf
   inc rbp                        ; Increment data pointer
   cmp rbp, rbx                   ; Make sure we haven't hit the region's end
   jne print_loop
@@ -128,7 +128,3 @@ error:
   mov rax, SYSCALL_EXIT
   neg rdi                        ; ...so negate to get actual errno
   syscall
-
-                                 
-
-

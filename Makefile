@@ -8,6 +8,7 @@ endif
 ifeq ($(uname),Linux)
 	format := elf64
 	perf := perf stat
+	ld_options += -dynamic-linker /lib64/ld-linux-x86-64.so.2
 endif
 
 .PHONY: perf_test integrity_check clean
@@ -26,8 +27,11 @@ clean:
 out-%: concurrency-print-x%
 	./$< >$@
 
-concurrency-%: concurrency-%.o
-	ld -lc $^ -o $@
+concurrency-print-%: concurrency-print-%.o
+	ld -lc $(ld_options) $^ -o $@
+
+concurrency-noprint-%: concurrency-noprint-%.o
+	ld -o $@ $^
 
 concurrency-print-x%.o: concurrency.asm
 	nasm -f $(format) -DSIZE=$(size) -DNPROCS=$* $^ -o $@
