@@ -3,31 +3,61 @@
   extern printf
   section .data
   unsigned_int:
-    db `%u\n\0`
-  section .text
+    db `%u\n`
+  null_byte:
+    db 0
+%else
+  section .data
+  null_byte:
+    db 0
 %endif
 
   ; Initialize constants.
   mov r12, 65537                 ; Exponent to modular-exponentiate with
   mov rbx, 235                   ; Modulus to modular-exponentiate with
   mov r15, NPROCS                ; Number of processes to fork.
+  mov r14, (SIZE+1)*8            ; Size of shared memory; reserving first
+                                 ; 64 bits for bookkeeping
 
-  ; Ask the kernel for a shared memory mapping.
-  mov eax, SYSCALL_MMAP
+  ; Check for command-line argument.
+  cmp qword [rsp], 1
+  je map_anon
+
+open_file:
+  ; We have a file specified on the command line, so open() it.
+  mov rax, SYSCALL_OPEN
+  mov rdi, [rsp+2*8]
+  mov rsi, O_RDWR|O_CREAT        ; read/write mode; create if necessary
+  mov rdx, 0o660                 ; `chmod`-mode of file to create (octal)
+  syscall
+  mov r13, rax                   ; preserve file descriptor in r13
+  mov rax, SYSCALL_PWRITE        ; adjust file size by writing to "end"
+  mov rdi, r13
+  mov rsi, null_byte             ; write a null byte
+  mov rdx, 1                     ; just one byte
+  mov r10, r14                   ; at offset of our desired file size
+  dec r10                        ; minus one
+  syscall
+  mov r8,  r13
+  mov r10, MAP_SHARED
+  jmp mmap
+
+map_anon:
   mov r10, MAP_SHARED|MAP_ANON   ; MAP_ANON means not backed by a file
   mov r8,  -1                    ; thus our file descriptor is -1
-  mov r9,   0                    ; and there's no file offset.
+mmap:
+  mov r9,   0                    ; ...and there's no file offset in either case.
+  ; Ask the kernel for a shared memory mapping.
+  mov eax, SYSCALL_MMAP
   mov rdx, PROT_READ|PROT_WRITE  ; We'd like a read/write mapping
   mov rdi,  0                    ; at no pre-specified memory location.
-  mov rsi, (SIZE+1)*8            ; Length of the mapping in bytes. Reserve first
-                                 ; word for process bookkeeping purposes.
-  mov r14, rsi                   ; Save that length for later reference.
+  mov rsi, r14                   ; Length of the mapping in bytes.
   syscall                        ; Do system call.
   test rax, rax                  ; Return value will be in rax.
   js error                       ; If it's negative, that's trouble.
   mov rbp, rax                   ; Otherwise, we have our memory region [rbp].
 
-  mov [rbp], r15                 ; Initialize the first machine word to NPROCS.
+  lock add [rbp], r15            ; Initialize the first machine word to NPROCS.
                                  ; We'll use it to track the # of still-running
                                  ; processes.
 
