@@ -4,6 +4,7 @@ uname := $(shell uname)
 ifeq ($(uname),Darwin)
 	format := macho64
 	perf := time
+	nasm_options += -Dprintf=_printf
 endif
 ifeq ($(uname),Linux)
 	format := elf64
@@ -34,7 +35,7 @@ concurrency-noprint-%: concurrency-noprint-%.o
 	ld -o $@ $^
 
 concurrency-print-x%.o: concurrency.asm
-	nasm -f $(format) -DSIZE=$(size) -DNPROCS=$* $^ -o $@
+	nasm -f $(format) $(nasm_options) -DSIZE=$(size) -DNPROCS=$* $^ -o $@
 
 concurrency-noprint-x%.o: concurrency.asm
 	nasm -f $(format) -DNOPRINT -DSIZE=$(size) -DNPROCS=$* $^ -o $@
