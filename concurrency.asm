@@ -77,9 +77,12 @@ child:
   mov rdi, 8                     ; Start from index 8 (past the bookkeeping)
 find_work:                       ; and try to find a piece of work to claim
   xor rax, rax
-  lock cmpxchg [rbp+rdi], rcx    ; Try to "claim" byte [rbp+rdi] if it is not
-                                 ; already claimed.
+  cmp qword [rbp+rdi], 0         ; Check if qword [rbp+rdi] is unclaimed.
+  jnz .moveon                    ; If not, move on - no use trying to lock.
+  lock cmpxchg [rbp+rdi], rcx    ; Try to "claim" qword [rbp+rdi] if it is still
+                                 ; unclaimed.
   jz found_work                  ; If successful, zero flag is set
+.moveon:
   add rdi, 8                     ; Otherwise, try a different piece.
 .next:
   cmp rdi, rsi                   ; Make sure we haven't hit the end.
