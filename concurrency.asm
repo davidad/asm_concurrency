@@ -1,16 +1,4 @@
 %include "os_dependent_stuff.asm"
-%ifndef NOPRINT
-  extern printf
-  section .data
-  unsigned_int:
-    db `%u\n`
-  null_byte:
-    db 0
-%else
-  section .data
-  null_byte:
-    db 0
-%endif
 
   ; Initialize constants.
   mov r12, 65537                 ; Exponent to modular-exponentiate with
@@ -158,3 +146,16 @@ error:
   mov rax, SYSCALL_EXIT
   neg rdi                        ; ...so negate to get actual errno
   syscall
+
+%ifndef NOPRINT
+  extern printf
+  section .data
+  unsigned_int:
+    db `%u\n`
+  null_byte:
+    db 0
+%else
+  section .data
+  null_byte:
+    db 0
+%endif
