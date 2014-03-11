@@ -5,7 +5,7 @@ ifeq ($(uname),Darwin)
 	format := macho64
 	perf := time
 endif
-ifeq ($(UNAME),Linux)
+ifeq ($(uname),Linux)
 	format := elf64
 	perf := perf stat
 endif
