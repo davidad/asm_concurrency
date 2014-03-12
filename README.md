@@ -20,7 +20,7 @@ You can also supply a command-line argument, which will be opened as a binary fi
     $ diff foo bar
     $ # same results, yay!
     
-The number after the x indicates how many processes will be forked by that executable. You can even run more than one instance of "concurrency" concurrently (shocker).
+The number after the x indicates how many processes will be forked by that executable. You can even run more than one instance of "concurrency" concurrently (shocking!).
 
     $ make clean
     $ make size=10000000 concurrency-noprint-x3
