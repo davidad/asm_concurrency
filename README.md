@@ -3,15 +3,14 @@ asm_concurrency
 
 How to run:
 
-1. Make sure you have a recent `nasm`; check that `nasm -v` reports `2.11` or newer.
-2. 
+* Make sure you have a recent `nasm`; check that `nasm -v` reports `2.11` or newer.
 ```
 $ git clone https://github.com/davidad/asm_concurrency.git
 $ cd asm_concurrency
 $ make
 ```
-3. See results.
-4. If you want to verify deterministic behavior, run `make integrity_check`.
+* See results.
+* If you want to verify deterministic behavior, run `make integrity_check`.
 
 You can also supply a command-line argument, which will be opened as a binary file.
 
@@ -37,5 +36,5 @@ The number after the x indicates how many processes will be forked by that execu
 
     $ make size=1000000 "nprocs=1 2 3 4 5 6 7 8 9 10 11 12 13 14 15"
 
-The output file will have size `(size+1)*8`. (This is due to keeping a bookkeeping quad-word in the file and assuming for simplicity that the file is an integer number of quad-words.)
-`nprocs` specifies the set of executables to build and test (`-x1`, `-x2`, etc.). This should have just been a command-line argument, but eh, this way works.
+* The output file will have size `(size+1)*8`. (This is due to keeping a bookkeeping quad-word in the file and assuming for simplicity that the file is an integer number of quad-words.)
+* `nprocs` specifies the set of executables to build and test (`-x1`, `-x2`, etc.). This should have just been a command-line argument, but eh, this way works.
