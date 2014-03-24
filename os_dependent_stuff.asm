@@ -1,22 +1,24 @@
 ; syscalls
 %ifidn __OUTPUT_FORMAT__,elf64
 ; http://lxr.linux.no/linux+v3.13.5/arch/x86/syscalls/syscall_64.tbl
-  %define SYSCALL_OPEN    2
-  %define SYSCALL_WRITE   1
-  %define SYSCALL_MMAP    9
-  %define SYSCALL_PWRITE  18
-  %define SYSCALL_FORK    57
-  %define SYSCALL_WAITID  247
-  %define SYSCALL_EXIT    60
+  %define SYSCALL_OPEN      2
+  %define SYSCALL_WRITE     1
+  %define SYSCALL_MMAP      9
+  %define SYSCALL_FTRUNCATE 77
+  %define SYSCALL_PWRITE    18
+  %define SYSCALL_FORK      57
+  %define SYSCALL_WAITID    247
+  %define SYSCALL_EXIT      60
 %elifidn __OUTPUT_FORMAT__,macho64
 ; http://www.opensource.apple.com/source/xnu/xnu-1456.1.26/bsd/kern/syscalls.master
-  %define SYSCALL_OPEN    0x2000005
-  %define SYSCALL_WRITE   0x2000004
-  %define SYSCALL_MMAP    0x20000C5
-  %define SYSCALL_PWRITE  0x200009A
-  %define SYSCALL_FORK    0x2000002
-  %define SYSCALL_WAITID  0x20000AD
-  %define SYSCALL_EXIT    0x2000001
+  %define SYSCALL_OPEN      0x2000005
+  %define SYSCALL_WRITE     0x2000004
+  %define SYSCALL_MMAP      0x20000C5
+  %define SYSCALL_FTRUNCATE 0x20000C9
+  %define SYSCALL_PWRITE    0x200009A
+  %define SYSCALL_FORK      0x2000002
+  %define SYSCALL_WAITID    0x20000AD
+  %define SYSCALL_EXIT      0x2000001
 %endif
 
 ; fcntls
